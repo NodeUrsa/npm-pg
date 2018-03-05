@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  build_and_test:
+    docker:
+      - image: circleci/node:$NODE_VERSION
+
+    steps:
+      - type: checkout
+      - run:
+          name: Set up .npmrc (auth)
+          command: |
+            sudo echo "registry=https://$NPM_REGISTRY" > ~/.npmrc
+            sudo echo "//$NPM_REGISTRY:_authToken=\"$NPM_AUTH_TOKEN\"" >> ~/.npmrc
+            sudo echo "//$NPM_REGISTRY:always-auth=true" >> ~/.npmrc
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Installing NPM dependencies
+          command: |
+            attempts=0
+            while ! yarn install || ((attempts++ > 5)); do
+                echo "yarn install attempt $attempts failed, retrying"
+            done
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Compile (tsc)
+          command: yarn ts:compile
+      - run:
+          name: Lint
+          command: yarn ts:lint
+      - run:
+          name: Test
+          command: yarn test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_and_test:
+          context: org-global

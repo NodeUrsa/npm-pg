@@ -1,0 +1,48 @@
+{
+  "name": "selvera-pg",
+  "version": "1.1.0",
+  "description": "Custom internal-use pgsql wrapper",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
+  "scripts": {
+    "test": "jasmine dist/test/*.spec.js",
+    "ts": "yarn ts:compile && yarn ts:lint",
+    "ts:lint": "tslint -c ./tslint.json -t stylish --project ./tsconfig.json 'lib/*.ts' '*.ts'",
+    "ts:compile": "tsc",
+    "ts:watch": "tsc --watch"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NodeUrsa/npm-pg.git"
+  },
+  "keywords": [
+    "selvera"
+  ],
+  "author": "Selvera",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NodeUrsa/npm-pg/issues"
+  },
+  "homepage": "https://github.com/NodeUrsa/npm-pg#readme",
+  "dependencies": {
+    "pg": "^7.4.1",
+    "selvera-aggregate-error": "github:selvera/npm-aggregate-error#v1.0.0",
+    "sql-template-strings": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/jasmine": "2.8.6",
+    "@types/node": "9.4.0",
+    "@types/pg": "7.4.1",
+    "jasmine": "2.9.0",
+    "tslint": "5.9.1",
+    "typescript": "2.7.1"
+  },
+  "files": [
+    "dist/lib/"
+  ],
+  "pre-commit": [
+    "ts",
+    "test"
+  ]
+}
